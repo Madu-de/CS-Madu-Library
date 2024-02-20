@@ -3,3 +3,8 @@
 
 Just a little C# library for my console based school applications.
 Much of this code is useless because they are better ways to do it. But our teacher wants it that way.
+
+## How to use it
+1. Clone this repo
+2. Build it in visual studio
+3. Import the <code>bin/Debug/net6.0/Madu.dll</code> file in your project
