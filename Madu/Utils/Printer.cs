@@ -2,8 +2,11 @@
 * Printer
 * Copyright © Madu/Marvin - 2024
 */
-namespace Madu.Util
+namespace Madu.Utils
 {
+    /// <summary>
+    /// A class which includes methods to print default elements
+    /// </summary>
     public class Printer
     {
         /// <summary>
