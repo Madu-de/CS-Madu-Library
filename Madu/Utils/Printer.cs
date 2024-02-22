@@ -10,7 +10,7 @@ namespace Madu.Utils
     public class Printer
     {
         /// <summary>
-        /// The name of the printer is shown at the logs
+        /// The name of the printer is shown at the prints
         /// </summary>
         public string Name { get; private set; }
 
@@ -20,12 +20,18 @@ namespace Madu.Utils
         public static bool DebugMode { get; set; }
 
         /// <summary>
+        /// If SaveInFile is true, all logs will be saved in writelines.log
+        /// </summary>
+        public static bool SaveInFile { get; set; }
+
+        /// <summary>
         /// A class which includes methods to print default elements
         /// </summary>
         public Printer(string name, bool debugMode = true)
         {
             Name = name;
             DebugMode = debugMode;
+            SaveInFile = true;
         }
 
         /// <summary>
@@ -97,29 +103,39 @@ namespace Madu.Utils
             string[] messages = message.Split('\n');
             foreach(string msg in messages)
             {
-                PrintPrefix(memberName, sourceFilePath, sourceLineNumber, printerMethod);
-                Console.Write($"{msg}\n");
+                string prefix = PrintPrefix(memberName, sourceFilePath, sourceLineNumber, printerMethod);
+                Console.Write(msg + '\n');
                 Console.ForegroundColor = ConsoleColor.White;
+                if (SaveInFile) WriteInFile(prefix + msg);
             }
         }
 
         /// <summary>
         /// Prints the prefix of every print
         /// </summary>
-        void PrintPrefix(string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
+        /// <returns>
+        /// The printed prefix
+        /// </returns>
+        string PrintPrefix(string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
         {
             string method = printerMethod.ToString().ToUpper().PadLeft(5);
             string path = $"{sourceFilePath.Split('\\').Last()}>{memberName}:{sourceLineNumber}".PadRight(20);
+            string prefixPart1 = $"[Madu] {path} - ";
+            string prefixPart2 = $"{DateTime.Now} ";
+            string prefixPart3 = $"{method} ";
+            string prefixPart4 = $"[{Name}] ";
+
             ConsoleColor methodColor = GetPrinterMethodColor(printerMethod);
             Console.ForegroundColor = methodColor;
-            Console.Write($"[Madu] {path} - ");
+            Console.Write(prefixPart1);
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write($"{DateTime.Now} ");
+            Console.Write(prefixPart2);
             Console.ForegroundColor = methodColor;
-            Console.Write($"{method} ");
+            Console.Write(prefixPart3);
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.Write($"[{Name}] ");
+            Console.Write(prefixPart4);
             Console.ForegroundColor = methodColor;
+            return prefixPart1 + prefixPart2 + prefixPart3 + prefixPart4;
         }
 
         /// <summary>
@@ -136,6 +152,16 @@ namespace Madu.Utils
                 { PrinterMethod.Error, ConsoleColor.Red },
             };
             return dict[method];
+        }
+
+        /// <summary>
+        /// Appends one line to the writelines.log file
+        /// </summary>
+        void WriteInFile(string line)
+        {
+            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+            using StreamWriter outputFile = new StreamWriter(Path.Combine(path, "writelines.log"), true, System.Text.Encoding.UTF8);
+            outputFile.WriteLine(line);
         }
     }
 }
