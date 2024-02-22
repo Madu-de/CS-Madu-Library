@@ -14,7 +14,7 @@ namespace Madu.Arrays
         /// <summary>
         /// A class which includes methods to print an array
         /// </summary>
-        public ArrayPrinter(string name, bool debugMode) : base(name, debugMode)
+        public ArrayPrinter(string name, bool debugMode = true) : base(name, debugMode)
         {}
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace Madu.Utils
         /// <summary>
         /// A class which includes methods to print default elements
         /// </summary>
-        public Printer(string name, bool debugMode)
+        public Printer(string name, bool debugMode = true)
         {
             Name = name;
             DebugMode = debugMode;
