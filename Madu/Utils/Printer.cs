@@ -106,8 +106,8 @@ namespace Madu.Utils
         void Print<T>(T message, string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
         {
             string messageAsString = message?.ToString() ?? "null";
-            string?[] messages = messageAsString.Split('\n');
-            foreach(string? msg in messages)
+            string[] messages = messageAsString.Split('\n');
+            foreach(string msg in messages)
             {
                 string prefix = PrintPrefix(memberName, sourceFilePath, sourceLineNumber, printerMethod);
                 Console.Write(msg + '\n');
