@@ -9,20 +9,25 @@ namespace Madu.Utils
     /// </summary>
     public class UserInputHandler
     {
-        private string GetInput(string question)
+        private readonly Printer printer = new(typeof(UserInputHandler).Name);
+
+        private string GetInput(string question, string memberName, string sourceFilePath, int sourceLineNumber)
         {
-            Console.Write(question);
+            printer.Log(question, memberName, sourceFilePath, sourceLineNumber);
             return Console.ReadLine();
         }
 
         /// <summary>
         /// Returns the default value of T if the userinput is not compatible
         /// </summary>
-        public T? GetInputAs<T>(string question)
+        public T? GetInputAs<T>(string question,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
-                return GetInputAsWithoutCheck<T>(question);
+                return GetInputAsWithoutCheck<T>(question, memberName, sourceFilePath, sourceLineNumber);
             }
             catch
             {
@@ -33,9 +38,12 @@ namespace Madu.Utils
         /// <summary>
         /// Throws an error if the userinput is not compatible
         /// </summary>
-        public T GetInputAsWithoutCheck<T>(string question)
+        public T GetInputAsWithoutCheck<T>(string question,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            return (T)Convert.ChangeType(GetInput(question), typeof(T));
+            return (T)Convert.ChangeType(GetInput(question, memberName, sourceFilePath, sourceLineNumber), typeof(T));
         }
 
         /// <summary>

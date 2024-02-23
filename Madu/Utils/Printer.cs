@@ -17,21 +17,21 @@ namespace Madu.Utils
         /// <summary>
         /// If DebugMode is true, the Debug method will be print messages
         /// </summary>
-        public static bool DebugMode { get; set; }
+        public bool DebugMode { get; set; }
 
         /// <summary>
         /// If SaveInFile is true, all logs will be saved in writelines.log
         /// </summary>
-        public static bool SaveInFile { get; set; }
+        public bool SaveInFile { get; set; }
 
         /// <summary>
         /// A class which includes methods to print default elements
         /// </summary>
-        public Printer(string name, bool debugMode = true)
+        public Printer(string name, bool debugMode = true, bool saveInFile = true)
         {
             Name = name;
             DebugMode = debugMode;
-            SaveInFile = true;
+            SaveInFile = saveInFile;
         }
 
         /// <summary>
@@ -95,7 +95,9 @@ namespace Madu.Utils
         /// </summary>
         public void PrintSeparator(char separatorChar = '-', int count = 50)
         {
-            Console.WriteLine(new string(separatorChar, count));
+            string message = new string(separatorChar, count);
+            Console.WriteLine(message);
+            if (SaveInFile) WriteInFile(message);
         }
 
         void Print(string message, string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
