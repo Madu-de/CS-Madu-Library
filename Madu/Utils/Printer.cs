@@ -37,9 +37,6 @@ namespace Madu.Utils
         /// <summary>
         /// Prints message as log
         /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// Throws if message is null
-        /// </exception>
         public void Log<T>(T message,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
@@ -51,9 +48,6 @@ namespace Madu.Utils
         /// <summary>
         /// Prints message to console, if DebugMode is true
         /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// Throws if message is null
-        /// </exception>
         public void Debug<T>(T message,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
@@ -66,9 +60,6 @@ namespace Madu.Utils
         /// <summary>
         /// Prints message as info
         /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// Throws if message is null
-        /// </exception>
         public void Info<T>(T message,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
@@ -80,9 +71,6 @@ namespace Madu.Utils
         /// <summary>
         /// Prints message as warn
         /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// Throws if message is null
-        /// </exception>
         public void Warn<T>(T message,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
@@ -94,9 +82,6 @@ namespace Madu.Utils
         /// <summary>
         /// Prints message as error
         /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// Throws if message is null
-        /// </exception>
         public void Error<T>(T message,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
@@ -118,14 +103,11 @@ namespace Madu.Utils
         /// <summary>
         /// Prints message
         /// </summary>
-        /// <exception cref="ArgumentNullException">
-        /// Throws if message is null
-        /// </exception>
         void Print<T>(T message, string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
         {
-            string messageAsString = (message?.ToString()) ?? throw new ArgumentNullException(nameof(message));
-            string[] messages = messageAsString.Split('\n');
-            foreach(string msg in messages)
+            string messageAsString = message?.ToString() ?? "null";
+            string?[] messages = messageAsString.Split('\n');
+            foreach(string? msg in messages)
             {
                 string prefix = PrintPrefix(memberName, sourceFilePath, sourceLineNumber, printerMethod);
                 Console.Write(msg + '\n');
