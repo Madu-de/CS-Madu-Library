@@ -105,7 +105,7 @@ namespace Madu.Utils
         /// </summary>
         void Print<T>(T message, string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
         {
-            string messageAsString = message?.ToString() ?? "null";
+            string messageAsString = GetMessageAsString(message);
             string[] messages = messageAsString.Split('\n');
             foreach(string msg in messages)
             {
@@ -158,6 +158,23 @@ namespace Madu.Utils
                 { PrinterMethod.Error, ConsoleColor.Red },
             };
             return dict[method];
+        }
+
+        string GetMessageAsString<T>(T message)
+        {
+            string messageAsString = message?.ToString() ?? "null";
+            var messageAsArray = message as Array;
+            if (message != null && messageAsArray != null)
+            {
+                List<string> list = new();
+                foreach (var item in messageAsArray)
+                {
+                    list.Add(item?.ToString() ?? "null");
+                }
+                messageAsString = $"{message.GetType()} -> ";
+                messageAsString += string.Join(", ", list);
+            }
+            return messageAsString;
         }
 
         /// <summary>
