@@ -169,10 +169,11 @@ namespace Madu.Utils
                 List<string> list = new();
                 foreach (var item in messageAsArray)
                 {
-                    list.Add(item?.ToString() ?? "null");
+                    list.Add(GetMessageAsString(item));
                 }
-                messageAsString = $"{message.GetType()} -> ";
+                messageAsString = $"{message.GetType()} {{ ";
                 messageAsString += string.Join(", ", list);
+                messageAsString += " }";
             }
             return messageAsString;
         }
