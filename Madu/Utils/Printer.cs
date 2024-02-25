@@ -25,13 +25,30 @@ namespace Madu.Utils
         public bool SaveInFile { get; set; }
 
         /// <summary>
-        /// A class which includes methods to print default elements
+        /// If PrintElementsOfArray is true, elements of an array will be printed
         /// </summary>
-        public Printer(string name, bool debugMode = true, bool saveInFile = true)
+        public bool PrintElementsOfArray { get; set; }
+
+        /// <summary>
+        /// Create a Printer with default options
+        /// </summary>
+        public Printer(string name)
         {
             Name = name;
-            DebugMode = debugMode;
-            SaveInFile = saveInFile;
+            DebugMode = true;
+            SaveInFile = true;
+            PrintElementsOfArray = true;
+        }
+
+        /// <summary>
+        /// Create a Printer with custom options
+        /// </summary>
+        public Printer(string name, PrinterOptions printerOptions)
+        {
+            Name = name;
+            DebugMode = printerOptions.DebugMode;
+            SaveInFile = printerOptions.SaveInFile;
+            PrintElementsOfArray = printerOptions.PrintElementsOfArray;
         }
 
         /// <summary>
@@ -164,7 +181,7 @@ namespace Madu.Utils
         {
             string messageAsString = message?.ToString() ?? "null";
             var messageAsArray = message as Array;
-            if (message != null && messageAsArray != null)
+            if (PrintElementsOfArray && message != null && messageAsArray != null)
             {
                 List<string> list = new();
                 foreach (var item in messageAsArray)
