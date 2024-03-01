@@ -23,5 +23,20 @@ namespace Madu.Utils
         /// If PrintElementsOfArray is true, elements of an array will be printed
         /// </summary>
         public bool PrintElementsOfArray { get; set; }
+
+        /// <summary>
+        /// If PrintFields is true, fields of an object will be printed
+        /// </summary>
+        public bool PrintFields { get; set; }
+
+        /// <summary>
+        /// If PrintProperties is true, properties of an object will be printed
+        /// </summary>
+        public bool PrintProperties { get; set; }
+
+        /// <summary>
+        /// If PrintMethods is true, methods of an object will be printed
+        /// </summary>
+        public bool PrintMethods { get; set; }
     }
 }

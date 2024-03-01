@@ -14,20 +14,7 @@ namespace Madu.Utils
         /// </summary>
         public string Name { get; private set; }
 
-        /// <summary>
-        /// If DebugMode is true, the Debug method will be print messages
-        /// </summary>
-        public bool DebugMode { get; set; }
-
-        /// <summary>
-        /// If SaveInFile is true, all logs will be saved in writelines.log
-        /// </summary>
-        public bool SaveInFile { get; set; }
-
-        /// <summary>
-        /// If PrintElementsOfArray is true, elements of an array will be printed
-        /// </summary>
-        public bool PrintElementsOfArray { get; set; }
+        public PrinterOptions Options { get; set; }
 
         /// <summary>
         /// Create a Printer with default options
@@ -35,9 +22,10 @@ namespace Madu.Utils
         public Printer(string name)
         {
             Name = name;
-            DebugMode = true;
-            SaveInFile = true;
-            PrintElementsOfArray = true;
+            Options = new PrinterOptions();
+            Options.DebugMode = true;
+            Options.SaveInFile = true;
+            Options.PrintElementsOfArray = true;
         }
 
         /// <summary>
@@ -46,65 +34,63 @@ namespace Madu.Utils
         public Printer(string name, PrinterOptions printerOptions)
         {
             Name = name;
-            DebugMode = printerOptions.DebugMode;
-            SaveInFile = printerOptions.SaveInFile;
-            PrintElementsOfArray = printerOptions.PrintElementsOfArray;
+            Options = printerOptions;
         }
 
         /// <summary>
         /// Prints message as log
         /// </summary>
-        public void Log<T>(T message,
+        public void Log<T>(T message, PrinterOptions? options = null,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            Print(message, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Log);
+            Print(message, options, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Log);
         }
 
         /// <summary>
         /// Prints message to console, if DebugMode is true
         /// </summary>
-        public void Debug<T>(T message,
+        public void Debug<T>(T message, PrinterOptions? options = null,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            if (!DebugMode) return;
-            Print(message, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Debug);
+            if (!Options.DebugMode) return;
+            Print(message, options, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Debug);
         }
 
         /// <summary>
         /// Prints message as info
         /// </summary>
-        public void Info<T>(T message,
+        public void Info<T>(T message, PrinterOptions? options = null,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            Print(message, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Info);
+            Print(message, options, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Info);
         }
 
         /// <summary>
         /// Prints message as warn
         /// </summary>
-        public void Warn<T>(T message,
+        public void Warn<T>(T message, PrinterOptions? options = null,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            Print(message, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Warn);
+            Print(message, options, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Warn);
         }
 
         /// <summary>
         /// Prints message as error
         /// </summary>
-        public void Error<T>(T message,
+        public void Error<T>(T message, PrinterOptions? options = null,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            Print(message, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Error);
+            Print(message, options, memberName, sourceFilePath, sourceLineNumber, PrinterMethod.Error);
         }
 
         /// <summary>
@@ -114,22 +100,23 @@ namespace Madu.Utils
         {
             string message = new string(separatorChar, count);
             Console.WriteLine(message);
-            if (SaveInFile) WriteInFile(message);
+            if (Options.SaveInFile) WriteInFile(message);
         }
 
         /// <summary>
         /// Prints message
         /// </summary>
-        void Print<T>(T message, string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
+        void Print<T>(T message, PrinterOptions? options, string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
         {
-            string messageAsString = GetMessageAsString(message);
+            options ??= Options;
+            string messageAsString = GetMessageAsString(message, options);
             string[] messages = messageAsString.Split('\n');
             foreach(string msg in messages)
             {
                 string prefix = PrintPrefix(memberName, sourceFilePath, sourceLineNumber, printerMethod);
                 Console.Write(msg + '\n');
                 Console.ForegroundColor = ConsoleColor.White;
-                if (SaveInFile) WriteInFile(prefix + msg);
+                if (options.SaveInFile) WriteInFile(prefix + msg);
             }
         }
 
@@ -177,20 +164,53 @@ namespace Madu.Utils
             return dict[method];
         }
 
-        string GetMessageAsString<T>(T message)
+        string GetMessageAsString<T>(T message, PrinterOptions options)
         {
             string messageAsString = message?.ToString() ?? "null";
             var messageAsArray = message as Array;
-            if (PrintElementsOfArray && message != null && messageAsArray != null)
+            if (options.PrintElementsOfArray && message != null && messageAsArray != null)
             {
                 List<string> list = new();
                 foreach (var item in messageAsArray)
                 {
-                    list.Add(GetMessageAsString(item));
+                    list.Add(GetMessageAsString(item, options));
                 }
                 messageAsString = $"{message.GetType()} {{ ";
                 messageAsString += string.Join(", ", list);
                 messageAsString += " }";
+            }
+            var properties = message?.GetType().GetProperties().Where(p => p.GetIndexParameters().Length == 0);
+            var fields = message?.GetType().GetFields();
+            var methods = message?.GetType().GetMethods();
+
+            if (properties != null && properties.Any() && options.PrintProperties)
+            {
+                messageAsString += " -> ";
+                foreach (var prop in properties)
+                {
+                    messageAsString += $"{prop.Name}: {prop.GetValue(message)}; ";
+                }
+            }
+            if (fields != null && fields.Length > 0 && options.PrintFields)
+            {
+                messageAsString += " -> ";
+                foreach (var field in message.GetType().GetFields())
+                {
+                    messageAsString += $"{field.Name}: {field.GetValue(message)}; ";
+                }
+            }
+            if (methods != null && methods.Length > 0 && options.PrintMethods)
+            {
+                messageAsString += " -> ";
+                foreach (var method in message.GetType().GetMethods())
+                {
+                    messageAsString += $"public {method.ReturnType} {method.Name}(";
+                    foreach (var parameter in method.GetParameters())
+                    {
+                        messageAsString += $"{parameter.ParameterType} {parameter.Name},";
+                    }
+                    messageAsString += "); ";
+                }
             }
             return messageAsString;
         }

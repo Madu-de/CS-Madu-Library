@@ -11,23 +11,23 @@ namespace Madu.Utils
     {
         private readonly Printer printer = new(typeof(UserInputHandler).Name);
 
-        private string GetInput(string question, string memberName, string sourceFilePath, int sourceLineNumber)
+        private string GetInput(string question, string memberName, string sourceFilePath, int sourceLineNumber, PrinterOptions? options)
         {
-            printer.Log(question, memberName, sourceFilePath, sourceLineNumber);
+            printer.Log(question, options, memberName, sourceFilePath, sourceLineNumber);
             return Console.ReadLine();
         }
 
         /// <summary>
         /// Returns the default value of T if the userinput is not compatible
         /// </summary>
-        public T? GetInputAs<T>(string question,
+        public T? GetInputAs<T>(string question, PrinterOptions? options,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
-                return GetInputAsWithoutCheck<T>(question, memberName, sourceFilePath, sourceLineNumber);
+                return GetInputAsWithoutCheck<T>(question, options, memberName, sourceFilePath, sourceLineNumber);
             }
             catch
             {
@@ -38,12 +38,12 @@ namespace Madu.Utils
         /// <summary>
         /// Throws an error if the userinput is not compatible
         /// </summary>
-        public T GetInputAsWithoutCheck<T>(string question,
+        public T GetInputAsWithoutCheck<T>(string question, PrinterOptions? options,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            return (T)Convert.ChangeType(GetInput(question, memberName, sourceFilePath, sourceLineNumber), typeof(T));
+            return (T)Convert.ChangeType(GetInput(question, memberName, sourceFilePath, sourceLineNumber, options), typeof(T));
         }
 
         /// <summary>
