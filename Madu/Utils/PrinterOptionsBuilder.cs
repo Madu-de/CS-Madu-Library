@@ -84,6 +84,15 @@ namespace Madu.Utils
         }
 
         /// <summary>
+        /// If DefaultWriteLine is true, every log is a simple Console.WriteLine
+        /// </summary>
+        public PrinterOptionsBuilder DefaultWriteLine(bool defaultWriteLine = true)
+        {
+            _printerOptions.DefaultWriteLine = defaultWriteLine;
+            return this;
+        }
+
+        /// <summary>
         /// Returns custom options
         /// </summary>
         public PrinterOptions Build()

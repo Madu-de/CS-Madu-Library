@@ -43,5 +43,10 @@ namespace Madu.Utils
         /// The file in which the logs will be saved (Based on the root directory)
         /// </summary>
         public string LogFile { get; set; } = "writelines.log";
+
+        /// <summary>
+        /// If DefaultWriteLine is true, every log is a simple Console.WriteLine
+        /// </summary>
+        public bool DefaultWriteLine { get; set; }
     }
 }

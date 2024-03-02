@@ -112,6 +112,11 @@ namespace Madu.Utils
         void Print<T>(T message, PrinterOptions? options, string memberName, string sourceFilePath, int sourceLineNumber, PrinterMethod printerMethod)
         {
             options ??= Options;
+            if (options.DefaultWriteLine)
+            {
+                Console.WriteLine(message);
+                return;
+            }
             string messageAsString = GetMessageAsString(message, options);
             string[] messages = messageAsString.Split('\n');
             foreach(string msg in messages)
