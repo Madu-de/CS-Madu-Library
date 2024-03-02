@@ -48,5 +48,18 @@ namespace Madu.Utils
         /// If DefaultWriteLine is true, every log is a simple Console.WriteLine
         /// </summary>
         public bool DefaultWriteLine { get; set; }
+
+        /// <summary>
+        /// Returns a copy of PrinterOptions
+        /// </summary>
+        public PrinterOptions Clone()
+        {
+            PrinterOptions options = new PrinterOptions();
+            foreach (var property in GetType().GetProperties().Where(p => p.GetIndexParameters().Length == 0))
+            {
+                property.SetValue(options, property.GetValue(this));
+            }
+            return options;
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace Madu.Utils
         /// <param name="parentOptions">If you want to base on other options, you can put it here</param>
         public PrinterOptionsBuilder(PrinterOptions? parentOptions = null)
         {
-            _printerOptions = parentOptions ?? new();
+            _printerOptions = parentOptions?.Clone() ?? new();
         }
 
         /// <summary>
