@@ -14,6 +14,9 @@ namespace Madu.Utils
         /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// The default options of every log. Can also been used for parentOptions in a PrinterOptionsBuilder
+        /// </summary>
         public PrinterOptions Options { get; set; }
 
         /// <summary>
