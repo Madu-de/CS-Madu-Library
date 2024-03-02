@@ -11,7 +11,7 @@ namespace Madu.Utils
     {
         private readonly Printer printer = new(typeof(UserInputHandler).Name);
 
-        private string GetInput(string question, string memberName, string sourceFilePath, int sourceLineNumber, PrinterOptions? options)
+        private string GetInput(string question, string memberName, string sourceFilePath, int sourceLineNumber, PrinterOptions? options = null)
         {
             printer.Log(question, options, memberName, sourceFilePath, sourceLineNumber);
             return Console.ReadLine();
@@ -20,7 +20,7 @@ namespace Madu.Utils
         /// <summary>
         /// Returns the default value of T if the userinput is not compatible
         /// </summary>
-        public T? GetInputAs<T>(string question, PrinterOptions? options,
+        public T? GetInputAs<T>(string question, PrinterOptions? options = null,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
@@ -38,7 +38,7 @@ namespace Madu.Utils
         /// <summary>
         /// Throws an error if the userinput is not compatible
         /// </summary>
-        public T GetInputAsWithoutCheck<T>(string question, PrinterOptions? options,
+        public T GetInputAsWithoutCheck<T>(string question, PrinterOptions? options = null,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)

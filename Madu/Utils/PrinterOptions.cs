@@ -38,5 +38,10 @@ namespace Madu.Utils
         /// If PrintMethods is true, methods of an object will be printed
         /// </summary>
         public bool PrintMethods { get; set; }
+
+        /// <summary>
+        /// The file in which the logs will be saved (Based on the root directory)
+        /// </summary>
+        public string LogFile { get; set; } = "writelines.log";
     }
 }

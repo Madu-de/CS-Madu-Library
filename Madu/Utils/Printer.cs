@@ -103,7 +103,7 @@ namespace Madu.Utils
         {
             string message = new string(separatorChar, count);
             Console.WriteLine(message);
-            if (Options.SaveInFile) WriteInFile(message);
+            if (Options.SaveInFile) WriteInFile(message, Options);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Madu.Utils
                 string prefix = PrintPrefix(memberName, sourceFilePath, sourceLineNumber, printerMethod);
                 Console.Write(msg + '\n');
                 Console.ForegroundColor = ConsoleColor.White;
-                if (options.SaveInFile) WriteInFile(prefix + msg);
+                if (options.SaveInFile) WriteInFile(prefix + msg, options);
             }
         }
 
@@ -221,10 +221,10 @@ namespace Madu.Utils
         /// <summary>
         /// Appends one line to the writelines.log file
         /// </summary>
-        void WriteInFile(string line)
+        void WriteInFile(string line, PrinterOptions options)
         {
             string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            using StreamWriter outputFile = new StreamWriter(Path.Combine(path, "writelines.log"), true, System.Text.Encoding.UTF8);
+            using StreamWriter outputFile = new StreamWriter(Path.Combine(path, options.LogFile), true, System.Text.Encoding.UTF8);
             outputFile.WriteLine(line);
         }
     }

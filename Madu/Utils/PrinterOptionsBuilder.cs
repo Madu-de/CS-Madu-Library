@@ -75,6 +75,15 @@ namespace Madu.Utils
         }
 
         /// <summary>
+        /// The file in which the logs will be saved (Based on the root directory)
+        /// </summary>
+        public PrinterOptionsBuilder LogFile(string filePath = "writelines.log")
+        {
+            _printerOptions.LogFile = filePath;
+            return this;
+        }
+
+        /// <summary>
         /// Returns custom options
         /// </summary>
         public PrinterOptions Build()
