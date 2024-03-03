@@ -47,6 +47,9 @@ namespace Madu.Utils
             return this;
         }
 
+        /// <summary>
+        /// If PrintElementsOfArray is true, this separator will be used to print the elements
+        /// </summary>
         public PrinterOptionsBuilder ElementsOfArraySeparator(string separator = ", ")
         {
             _printerOptions.ElementsOfArraySeparator = separator;
