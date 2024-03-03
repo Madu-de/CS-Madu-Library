@@ -47,6 +47,12 @@ namespace Madu.Utils
             return this;
         }
 
+        public PrinterOptionsBuilder ElementsOfArraySeparator(string separator = ", ")
+        {
+            _printerOptions.ElementsOfArraySeparator = separator;
+            return this;
+        }
+
         /// <summary>
         /// If PrintFields is true, fields of an object will be printed
         /// </summary>

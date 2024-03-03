@@ -25,6 +25,11 @@ namespace Madu.Utils
         public bool PrintElementsOfArray { get; set; }
 
         /// <summary>
+        /// If PrintElementsOfArray is true, this seperator will be used to print the elements
+        /// </summary>
+        public string ElementsOfArraySeparator { get; set; } = ", ";
+
+        /// <summary>
         /// If PrintFields is true, fields of an object will be printed
         /// </summary>
         public bool PrintFields { get; set; }

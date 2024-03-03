@@ -26,9 +26,6 @@ namespace Madu.Utils
         {
             Name = name;
             Options = new PrinterOptions();
-            Options.DebugMode = true;
-            Options.SaveInFile = true;
-            Options.PrintElementsOfArray = true;
         }
 
         /// <summary>
@@ -184,7 +181,7 @@ namespace Madu.Utils
                     list.Add(GetMessageAsString(item, options));
                 }
                 messageAsString = $"{message.GetType()} {{ ";
-                messageAsString += string.Join(", ", list);
+                messageAsString += string.Join(options.ElementsOfArraySeparator, list);
                 messageAsString += " }";
             }
             var properties = message?.GetType().GetProperties().Where(p => p.GetIndexParameters().Length == 0);
