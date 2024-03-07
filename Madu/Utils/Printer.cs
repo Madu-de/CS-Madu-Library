@@ -1,4 +1,6 @@
-﻿/**
+﻿
+using System.Reflection;
+/**
 * Printer
 * Copyright © Madu/Marvin - 2024
 */
@@ -172,52 +174,93 @@ namespace Madu.Utils
         string GetMessageAsString<T>(T message, PrinterOptions options)
         {
             string messageAsString = message?.ToString() ?? "null";
+            
+            if (options.PrintElementsOfArray)
+            {
+                messageAsString += GetArrayAsString(message, options);
+            }
+            if (options.PrintProperties)
+            {
+                messageAsString += GetPropertiesAsString(message);
+            }
+            if (options.PrintFields)
+            {
+                messageAsString += GetFieldsAsString(message);
+            }
+            if (options.PrintMethods)
+            {
+                messageAsString += GetMethodsAsString(message);
+            } 
+            
+            return messageAsString;
+        }
+
+        string GetArrayAsString<T>(T message, PrinterOptions options)
+        {
             var messageAsArray = message as Array;
-            if (options.PrintElementsOfArray && message != null && messageAsArray != null)
+            string arrayAsString = "";
+            if (message != null && messageAsArray != null)
             {
                 List<string> list = new();
                 foreach (var item in messageAsArray)
                 {
                     list.Add(GetMessageAsString(item, options));
                 }
-                messageAsString = $"{message.GetType()} {{ ";
-                messageAsString += string.Join(options.ElementsOfArraySeparator, list);
-                messageAsString += " }";
+                arrayAsString = $"{message.GetType()} {{ ";
+                arrayAsString += string.Join(options.ElementsOfArraySeparator, list);
+                arrayAsString += " }";
             }
-            var properties = message?.GetType().GetProperties().Where(p => p.GetIndexParameters().Length == 0);
-            var fields = message?.GetType().GetFields();
-            var methods = message?.GetType().GetMethods();
+            return arrayAsString;
+        }
 
-            if (properties != null && properties.Any() && options.PrintProperties)
+        string GetPropertiesAsString<T>(T message)
+        {
+            var properties = message?.GetType().GetProperties().Where(p => p.GetIndexParameters().Length == 0);
+            string propertiesAsString = "";
+            if (properties != null && properties.Any())
             {
-                messageAsString += " -> ";
+                propertiesAsString = " -> ";
                 foreach (var prop in properties)
                 {
-                    messageAsString += $"{prop.Name}: {prop.GetValue(message)}; ";
+                    propertiesAsString += $"{prop.Name}: {prop.GetValue(message)}; ";
                 }
             }
-            if (fields != null && fields.Length > 0 && options.PrintFields)
+            return propertiesAsString;
+        }
+
+        string GetFieldsAsString<T>(T message)
+        {
+            var fields = message?.GetType().GetFields();
+            string fieldsAsString = "";
+            if (message != null && fields != null && fields.Length > 0)
             {
-                messageAsString += " -> ";
+                fieldsAsString += " -> ";
                 foreach (var field in message.GetType().GetFields())
                 {
-                    messageAsString += $"{field.Name}: {field.GetValue(message)}; ";
+                    fieldsAsString += $"{field.Name}: {field.GetValue(message)}; ";
                 }
             }
-            if (methods != null && methods.Length > 0 && options.PrintMethods)
+            return fieldsAsString;
+        }
+
+        string GetMethodsAsString<T>(T message)
+        {
+            var methods = message?.GetType().GetMethods();
+            string methodsAsString = "";
+            if (message != null && methods != null && methods.Length > 0)
             {
-                messageAsString += " -> ";
+                methodsAsString += " -> ";
                 foreach (var method in message.GetType().GetMethods())
                 {
-                    messageAsString += $"public {method.ReturnType} {method.Name}(";
+                    methodsAsString += $"public {method.ReturnType} {method.Name}(";
                     foreach (var parameter in method.GetParameters())
                     {
-                        messageAsString += $"{parameter.ParameterType} {parameter.Name},";
+                        methodsAsString += $"{parameter.ParameterType} {parameter.Name},";
                     }
-                    messageAsString += "); ";
+                    methodsAsString += "); ";
                 }
             }
-            return messageAsString;
+            return methodsAsString;
         }
 
         /// <summary>
